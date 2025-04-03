@@ -17,8 +17,8 @@ const RandomNoteGenerator = ({
 }) => {
   const dispatch = useDispatch();
   const isGuessSuccessful = useSelector(selectIsGuessSuccessful);
-  const generatedNote = useSelector(
-    (state: RootState) => state.note.generatedNote
+  const { generatedNote, hasAttempted, generatedNoteCount } = useSelector(
+    (state: RootState) => state.note
   );
   const guessedNote = useSelector(
     (state: RootState) => state.note.guessedNoteArray
@@ -34,31 +34,28 @@ const RandomNoteGenerator = ({
       transform: [{ rotate: "90deg" }],
     },
   });
-  // useEffect(() => {
-  //   let timer = setTimeout(() => {
-  //     const noteIndex = Math.floor(Math.random() * notes.length);
-  //     const accidentalIndex = Math.floor(
-  //       Math.random() * notes[noteIndex].length
-  //     );
-  //     dispatch(setGeneratedNote(notes[noteIndex][accidentalIndex]));
-  //   }, timeInterval);
 
-  //   return () => clearTimeout(timer);
-  // }, []);
   useEffect(() => {
-    const noteIndex = Math.floor(Math.random() * notes.length);
-    const accidentalIndex = Math.floor(Math.random() * notes[noteIndex].length);
-    console.log("note index:", noteIndex);
-    console.log("accidental index:", accidentalIndex);
-    console.log("note:", notes[noteIndex][accidentalIndex]);
-    console.log("generated note:", generatedNote);
-    console.log("guessed note:", guessedNote);
-    const timer = setTimeout(() => {
-      dispatch(setGeneratedNote(notes[noteIndex][accidentalIndex]));
-    }, 1000);
+    if (hasAttempted || !generatedNoteCount) {
+      const noteIndex = Math.floor(Math.random() * notes.length);
+      const accidentalIndex = Math.floor(
+        Math.random() * notes[noteIndex].length
+      );
+      // console.log("note index:", noteIndex);
+      // console.log("accidental index:", accidentalIndex);
+      // console.log("note:", notes[noteIndex][accidentalIndex]);
+      // console.log("generated note:", generatedNote);
+      console.log("guessed note:", guessedNote);
+      const timer = setTimeout(
+        () => {
+          dispatch(setGeneratedNote(notes[noteIndex][accidentalIndex]));
+        },
+        generatedNoteCount ? 1000 : 0
+      );
 
-    return () => clearTimeout(timer);
-  }, [guessedNote]);
+      return () => clearTimeout(timer);
+    }
+  }, [guessedNote, hasAttempted]);
 
   return (
     <Text

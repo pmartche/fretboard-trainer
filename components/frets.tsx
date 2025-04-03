@@ -20,7 +20,6 @@ const Fretboard = ({ notes }: { notes: string[][] }) => {
           <Pressable
             style={index === 0 ? styles.nut : styles.button}
             onPress={() => dispatch(setGuessedNote(note))}
-            // onPress={() => console.log("pressed note:", note)}
           >
             <Text style={index === 0 ? styles.nutText : styles.text}>
               {index === 0 ? note[0] : getFretSymbol(index)}

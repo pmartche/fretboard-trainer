@@ -15,32 +15,38 @@ import { ThemedView } from "@/components/ThemedView";
 import Fretboard from "@/components/frets";
 import { getFretboardNotes } from "@/utils/functions";
 import RandomNoteGenerator from "@/components/randomNoteGeneratorDisplay";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { store } from "@/global/store";
 import { useState } from "react";
+import { resetGeneratedNoteCount } from "@/global/slices/noteSlice";
 
 export default function HomeScreen() {
-  const notes = getFretboardNotes(7, 13);
+  const dispatch = useDispatch();
+  const openStringNotes = [7, 0];
+  const turnsPerTuning = 10;
+  const guessesBeforeTuningChange = 10;
+  const [notes, setNotes] = useState(getFretboardNotes(7, 13));
   console.log("notes:", notes);
   const [isInProgress, setIsInProgress] = useState(false);
+
+  const onStartStop = () => {
+    dispatch(resetGeneratedNoteCount());
+    setIsInProgress(!isInProgress);
+  };
+
   return (
-    <Provider store={store}>
-      <View style={styles.mainView}>
-        <Fretboard notes={notes} />
-        <View>
-          <Pressable
-            style={styles.startStopButton}
-            onPress={() => setIsInProgress(!isInProgress)}
-          >
-            <Text>start/stop</Text>
-          </Pressable>
-          {isInProgress && (
-            <RandomNoteGenerator notes={notes} timeInterval={3000} />
-          )}
-        </View>
+    <View style={styles.mainView}>
+      <Fretboard notes={notes} />
+      <View>
+        <Pressable style={styles.startStopButton} onPress={onStartStop}>
+          <Text>start / stop</Text>
+        </Pressable>
+        {isInProgress && (
+          <RandomNoteGenerator notes={notes} timeInterval={3000} />
+        )}
       </View>
-    </Provider>
+    </View>
   );
 }
 

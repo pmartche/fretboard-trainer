@@ -1,4 +1,3 @@
-import { NOTES } from "@/constants";
 import { INoteState } from "@/interfaces";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -17,18 +16,30 @@ export const noteSlice = createSlice({
     setGeneratedNote: (state, action) => {
       const { payload } = action;
       state.generatedNote = payload;
+      state.generatedNoteCount++;
       state.hasAttempted = false;
     },
     setGuessedNote: (state, action) => {
       const { payload } = action;
-      console.log("payload:", payload);
       state.guessedNoteArray = payload;
       state.hasAttempted = true;
+    },
+    setGuessesBeforeTuningChange: (state, action) => {
+      const { payload } = action;
+      state.guessesBeforeTuningChange = payload;
+    },
+    resetGeneratedNoteCount: (state) => {
+      state.generatedNoteCount = 0;
     },
   },
 });
 
-export const { setGeneratedNote, setGuessedNote } = noteSlice.actions;
+export const {
+  setGeneratedNote,
+  setGuessedNote,
+  setGuessesBeforeTuningChange,
+  resetGeneratedNoteCount,
+} = noteSlice.actions;
 
 export const selectIsGuessSuccessful = (state: { note: INoteState }) => {
   const {
