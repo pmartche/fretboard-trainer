@@ -20,9 +20,12 @@ export const noteSlice = createSlice({
       state.hasAttempted = false;
     },
     setGuessedNote: (state, action) => {
+      console.log("guessed note activated", state.guessesBeforeTuningChange);
       const { payload } = action;
       state.guessedNoteArray = payload;
+      state.guessesBeforeTuningChange--;
       state.hasAttempted = true;
+      console.log("guessesAfter:", state.guessesBeforeTuningChange);
     },
     setGuessesBeforeTuningChange: (state, action) => {
       const { payload } = action;
@@ -50,4 +53,5 @@ export const selectIsGuessSuccessful = (state: { note: INoteState }) => {
 
   return guessedNoteArray?.includes(generatedNote);
 };
+
 export default noteSlice.reducer;

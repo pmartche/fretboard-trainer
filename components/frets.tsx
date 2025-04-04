@@ -13,6 +13,7 @@ type FretboardProps = {
 
 const Fretboard = ({ notes }: { notes: string[][] }) => {
   const dispatch = useDispatch();
+
   return (
     <View>
       {notes.map((note, index) => (

@@ -15,20 +15,43 @@ import { ThemedView } from "@/components/ThemedView";
 import Fretboard from "@/components/frets";
 import { getFretboardNotes } from "@/utils/functions";
 import RandomNoteGenerator from "@/components/randomNoteGeneratorDisplay";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { store } from "@/global/store";
-import { useState } from "react";
-import { resetGeneratedNoteCount } from "@/global/slices/noteSlice";
+import { RootState, store } from "@/global/store";
+import { useEffect, useState } from "react";
+import {
+  resetGeneratedNoteCount,
+  setGuessesBeforeTuningChange,
+} from "@/global/slices/noteSlice";
 
 export default function HomeScreen() {
   const dispatch = useDispatch();
   const openStringNotes = [7, 0];
+  const numberOfNotes = 13;
+  const [noteIndex, setNoteIndex] = useState(0);
   const turnsPerTuning = 10;
-  const guessesBeforeTuningChange = 10;
-  const [notes, setNotes] = useState(getFretboardNotes(7, 13));
-  console.log("notes:", notes);
+
+  const { guessesBeforeTuningChange } = useSelector(
+    (state: RootState) => state.note
+  );
+  const [notes, setNotes] = useState(
+    getFretboardNotes(openStringNotes[noteIndex], numberOfNotes)
+  );
   const [isInProgress, setIsInProgress] = useState(false);
+
+  useEffect(() => {
+    dispatch(setGuessesBeforeTuningChange(turnsPerTuning));
+  }, []);
+
+  useEffect(() => {
+    console.log("guesses before tuning change:", guessesBeforeTuningChange);
+    if (guessesBeforeTuningChange === 0) {
+      const newIndex = (noteIndex + 1) % openStringNotes.length;
+      setNoteIndex(newIndex);
+      setNotes(getFretboardNotes(openStringNotes[noteIndex], numberOfNotes));
+      dispatch(setGuessesBeforeTuningChange(turnsPerTuning));
+    }
+  }, [guessesBeforeTuningChange]);
 
   const onStartStop = () => {
     dispatch(resetGeneratedNoteCount());

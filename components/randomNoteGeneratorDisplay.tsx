@@ -41,11 +41,6 @@ const RandomNoteGenerator = ({
       const accidentalIndex = Math.floor(
         Math.random() * notes[noteIndex].length
       );
-      // console.log("note index:", noteIndex);
-      // console.log("accidental index:", accidentalIndex);
-      // console.log("note:", notes[noteIndex][accidentalIndex]);
-      // console.log("generated note:", generatedNote);
-      console.log("guessed note:", guessedNote);
       const timer = setTimeout(
         () => {
           dispatch(setGeneratedNote(notes[noteIndex][accidentalIndex]));
